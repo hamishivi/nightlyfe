@@ -100,7 +100,7 @@ module.exports = function (app, passport) {
                             info2.user = false;
                             if (venue) {
                                 info2.going = venue.going;
-                                if (req.user && contains(req.user.going, venue.name)) {
+                                if (req.user && contains(req.user.going, venue.id)) {
                                     info2.user = true;
                                 }
                                 info2.going = venue.going;
@@ -137,7 +137,7 @@ module.exports = function (app, passport) {
         console.log('hey')
         var venue = req.params.venue;
         var user = req.user.facebook.id;
-        Venue.findOne({ 'name': venue }, function (err, venue) {
+        Venue.findOne({ 'id': venue }, function (err, venue) {
             if (err) {
                 throw err;
             }

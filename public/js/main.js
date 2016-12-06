@@ -2,8 +2,10 @@ var usergoing = {};
 
 $('document').ready(function() {
     $("#search").bind("keypress", function(event) {
+        
         if(event.which == 13) {
-            $("login").html("");
+            usergoing = {};
+            $("#login").html("");
             $('ul').html("");
             event.preventDefault();
             getBusiness($("#search").val());
@@ -13,16 +15,27 @@ $('document').ready(function() {
         $("#search").val("");
     });
     $(document).on('click', '#goingClick', function(e) {
-        $("login").html("");
+        $("#login").html("");
         var curRest = $(this).attr('name')
+        if ($("#fb").text().toLowerCase() == "login with facebook") {
+             $("#login").html('<i class="material-icons">warning</i>You need to login to do that!');
+             return;
+        } else {
+            if (usergoing[curRest]) {
+                    $("."+curRest).text(parseInt($("."+curRest).text())-1);
+                    usergoing[curRest] = false;
+                } else {
+                    $("."+curRest).text(parseInt($("."+curRest).text())+1);
+                    usergoing[curRest] = true;
+                }
+        }
         $.get('/addgoing/'+curRest, function(data) {
             var data = JSON.parse(data);
             if (data.loginFail == true) {
                 $("#login").html('<i class="material-icons">warning</i>You need to login to do that!');
-            } else {
-                console.log(data)
             }
-        })
+        });
+       
     });
 })
 
@@ -35,6 +48,7 @@ function getBusiness(search) {
         for (var i = 0; i < bars.length; i++) {
             details(bars[i].id);
         }
+        console.log(usergoing)
     }, 'json')
 }
 
@@ -52,7 +66,7 @@ function details(id) {
                  '<img src="'+ image_url +'" alt="" class="circle">' +
                   '<a href="'+ url +'>"<span class="title">'+name+'</span></a>'+
                   '<p id="review">'+review+'</p>' +
-                  '<a id="goingClick" name="'+data.id+'" class="secondary-content"><span id="going">'+going+'</span> going!</a></li>'
+                  '<a id="goingClick" name="'+data.id+'" class="secondary-content"><span id="going" class="'+data.id+'">'+going+'</span> going!</a></li>'
         $("ul").append(string);
     }, 'json')
 }

@@ -15,7 +15,7 @@
             <p>Search for bars and so on around you and see if anyone else is going!</p>
             <p><span class="red-text" id="login"></span></p>
             <% if (!login) { %>
-                <a href='/auth/facebook' class="waves-effect waves-light btn blue white-text">Login with Facebook</a>
+                <a href='/auth/facebook' id="fb" class="waves-effect waves-light btn blue white-text">Login with Facebook</a>
             <% } else { %>
               <a href='/logout' class="waves-effect waves-light btn black white-text" id="logout">Logout</a>
             <% } %>
