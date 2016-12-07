@@ -18,7 +18,7 @@ module.exports = function (passport) {
     passport.use(new FacebookStrategy({
     clientID:     process.env.FACEBOOK_KEY,
     clientSecret: process.env.FACEBOOK_SECRET,
-    callbackURL: "https://nightlyfe-hamishivi.c9users.io/auth/facebook/callback",
+    callbackURL: "https://nyghtlyfe.herokuapp.com/auth/facebook/callback",
     passReqToCallback   : true,
   },
     function (request, accessToken, refreshToken, profile, done) {
