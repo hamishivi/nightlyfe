@@ -134,14 +134,12 @@ module.exports = function (app, passport) {
             res.send(JSON.stringify({ "loginFail":true }));
             return;
         }
-        console.log('hey')
         var venue = req.params.venue;
         var user = req.user.facebook.id;
         Venue.findOne({ 'id': venue }, function (err, venue) {
             if (err) {
                 throw err;
             }
-            console.log('finding user')
             User.findOne({'facebook.id' : user}, function(err, user) {
                 if (err) throw err;
                 if (contains(user.going, venue.id)) {
@@ -157,7 +155,6 @@ module.exports = function (app, passport) {
                 user.save(function(err) {
                     if (err) return err;
                 });
-                console.log('successss')
                 res.send(JSON.stringify({success:true}));
             });
         });

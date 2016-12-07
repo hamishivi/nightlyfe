@@ -1,18 +1,39 @@
 var usergoing = {};
 
-$('document').ready(function() {
-    $("#search").bind("keypress", function(event) {
-        
+$("#search").bind("keypress", function(event) {
         if(event.which == 13) {
+            usergoing = {};
+            Cookies.set('searched', true);
+            $("#login").html("");
+            $('ul').html("");
+            event.preventDefault();
+            $("#loader").show();
+            getBusiness($("#search").val());
+    }
+});
+
+$(document).ready(function() {
+    $("#loader").hide();
+    if (Cookies.get('search') && Cookies.get('login')) {
+        Cookies.remove('login');
+        $("#search").val(Cookies.get('search'));
+        if (Cookies.get('searched') == 'true') {
+            Cookies.remove('searched');
             usergoing = {};
             $("#login").html("");
             $('ul').html("");
             event.preventDefault();
+            $("#loader").show();
             getBusiness($("#search").val());
+        }
     }
-    });
     $("#del").on('click', function() {
         $("#search").val("");
+    });
+    $("#fb").on('click', function() {
+        Cookies.set('search', $("#search").val());
+        Cookies.set('login', true);
+        window.location.href = '/auth/facebook';
     });
     $(document).on('click', '#goingClick', function(e) {
         $("#login").html("");
@@ -68,5 +89,6 @@ function details(id) {
                   '<p id="review">'+review+'</p>' +
                   '<a id="goingClick" name="'+data.id+'" class="secondary-content"><span id="going" class="'+data.id+'">'+going+'</span> going!</a></li>'
         $("ul").append(string);
+        $("#loader").hide();
     }, 'json')
 }

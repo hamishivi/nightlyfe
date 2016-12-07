@@ -13,6 +13,7 @@
             <h2>NightLyfe - club coordination</h2>
             <!-- search bar -->
             <p>Search for bars and so on around you and see if anyone else is going!</p>
+            <p>Hit 'going' below after searching to declare that you are going to the bar! (you must login to do this)</p>
             <p><span class="red-text" id="login"></span></p>
             <% if (!login) { %>
                 <a href='/auth/facebook' id="fb" class="waves-effect waves-light btn blue white-text">Login with Facebook</a>
@@ -33,25 +34,22 @@
              </nav>
              <br><br>
         <!-- list of results -->
+            <div class="progress" id="loader">
+              <div class="indeterminate"></div>
+            </div>
             <ul class="collection">
-                <% for (var b in bars) { %>
-                <li class="collection-item avatar">
-                  <img src='<%= b.imageURL %>' alt="" class="circle">
-                  <span class="title"><%= b.name %></span>
-                  <p><%= b.review %>
-                  <a href="#!" class="secondary-content"><span id="going"><%= b.going %></span> going!</a>
-                </li>
-                <% } %>
             </ul>
         </div>
         <!-- the classic hamish ivison footer -->
           <div class="footer-copyright">
             <div class="container">
-            Made by <a class="grey-text text-lighten-4" href="http://www.hamishivison.com/">Hamish Ivison</a>
+            Made by <a class="grey-text text-lighten-4" href="http://www.hamishivison.com/">Hamish Ivison</a>.
+            Much thanks to the Yelp API and materializecss.
             </div>
           </div>
         <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
         <script type="text/javascript" src="public/js/materialize.min.js"></script>
+        <script type="text/javascript" src="public/js/cookie.js"></script>
         <script type="text/javascript" src="public/js/main.js"></script>
     </body>
 </html>

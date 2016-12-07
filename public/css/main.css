@@ -12,3 +12,11 @@ body {
     font-size: 0.9rem;
     font-style: italic;
 }
+
+.avatar:hover {
+    background-color: #e0e0e0 !important;
+}
+
+a:hover {
+    color: #80d8ff;
+}

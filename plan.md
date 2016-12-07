@@ -1,5 +1,4 @@
 pages:
-get user going/not going toggle working...
-search (& search?address= for searches so you can redirect back to search)
+- add better css for collection and better going button
 
 * add support for search by current location
