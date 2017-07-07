@@ -2,7 +2,6 @@
 
 var FacebookStrategy = require('passport-facebook').Strategy;
 var User = require('../models/users');
-var configAuth = require('./auth');
 
 module.exports = function (passport) {
     passport.serializeUser(function (user, done) {
@@ -18,7 +17,7 @@ module.exports = function (passport) {
     passport.use(new FacebookStrategy({
     clientID:     process.env.FACEBOOK_KEY,
     clientSecret: process.env.FACEBOOK_SECRET,
-    callbackURL: "https://nyghtlyfe.herokuapp.com/auth/facebook/callback",
+    callbackURL: process.env.APP_URL + "/auth/facebook/callback",
     passReqToCallback   : true,
   },
     function (request, accessToken, refreshToken, profile, done) {

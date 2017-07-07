@@ -64,6 +64,7 @@ $(document).ready(function() {
 function getBusiness(search) {
     var url = '/api/' +search
     $.get(url, function(data) {
+        console.log(data);
         var bars = data.businesses;
         console.log(bars)
         for (var i = 0; i < bars.length; i++) {

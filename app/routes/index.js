@@ -1,10 +1,8 @@
 'use strict';
 
 var path = process.cwd();
-var bodyParser = require('body-parser');
 var Venue = require('../models/venues');
 var User = require('../models/users');
-var mongoose = require('mongoose');
 var request = require('request');
 
 module.exports = function (app, passport) {
@@ -34,8 +32,28 @@ module.exports = function (app, passport) {
     });
     
     app.get('/auth/facebook', passport.authenticate('facebook'));
+    
+    // for generating a new bearer token when needed since Yelp api tokens are time limited
+    app.get('/yelp/bearer', isLoggedIn, function(req, res) {
+        console.log("getting token");
+         if (req.user.facebook.id != process.env.USER_ID) {
+             res.send("Only the admin can access this, thanks.");
+             return;
+         }
+         request.post({url:'https://api.yelp.com/oauth2/token', 
+            form: {
+                grant_type: "client_credentials",
+                client_id: process.env.YELP_CLIENTID,
+                client_secret: process.env.YELP_CLIENTSECRET
+            }}, function(err,httpResponse,body) { 
+                 if(err) {
+                console.log(err);
+            } else {
+                res.json(body);
+            }
+                });
+    });
 
-    // note we need to keep search intact
     app.get('/auth/facebook/callback',
         passport.authenticate('facebook', { failureRedirect: '/login' }),
         function(req, res) {
@@ -45,9 +63,9 @@ module.exports = function (app, passport) {
     
     app.get('/api/:locale', function(req, res) {
        // grabs business details with simple yelp api search
-       res.setHeader('Content-Type', 'application/json')
+       res.setHeader('Content-Type', 'application/json');
        var search = req.params.locale;
-       var url = "https://api.yelp.com/v3/businesses/search?categories=bars&location="+search
+       var url = "https://api.yelp.com/v3/businesses/search?categories=bars&location="+search;
         request({
             url: url,
             method: 'GET',
@@ -58,68 +76,79 @@ module.exports = function (app, passport) {
             if(error) {
                 console.log(error);
             } else {
-                res.send(body)
+                res.send(body);
             }
         });
     });
     
     app.get('/details/:id', function(req, res) {
         // gets details of specific business
-        res.setHeader('Content-Type', 'application/json')
+        res.setHeader('Content-Type', 'application/json');
         var search = req.params.id;
-        var url = "https://api.yelp.com/v3/businesses/"+search
+        var url = "https://api.yelp.com/v3/businesses/"+search;
         var options = {
             url: url,
             method: 'GET',
             headers: {
                 Authorization: 'Bearer ' + process.env.YELP_TOKEN
             }
-        }
-        request(options, function(error, response, data){
+        };
+        request(options, function(error, response, searchResponseBody){
             if(error) {
                 console.log(error);
             } else {
-                url = "https://api.yelp.com/v3/businesses/"+search + '/reviews'
+                url = "https://api.yelp.com/v3/businesses/"+search + '/reviews';
                 options = {
                     url: url,
                     method: 'GET',
                     headers: {
                         Authorization: 'Bearer ' + process.env.YELP_TOKEN
                     }
-                }
-                request(options, function(error, response, body){
+                };
+                // 
+                request(options, function(error, response, reviewResponseBody){
                     if(error) {
                         console.log(error);
                     } else {
-                        var info = JSON.parse(body);
-                        var info2 = JSON.parse(data);
-                        Venue.findOne({ 'id': info2.id }, function (err, venue) {
+                        var reviewBody, searchBody;
+                        try {
+                        reviewBody = JSON.parse(reviewResponseBody);
+                        searchBody = JSON.parse(searchResponseBody);
+                        } catch (err) {
+                            console.log(err);
+                        }
+                        if (!searchBody) {
+                            // just exit gracefully. The yelp api is erroring out for some reason
+                            // kind of hacky but hey it works!
+                            return;
+                        }
+                        Venue.findOne({ 'id': searchBody.id }, function (err, venue) {
                             if (err) {
                                 throw err;
                             }
-                            info2.user = false;
+                            searchBody.user = false;
                             if (venue) {
-                                info2.going = venue.going;
+                                searchBody.going = venue.going;
                                 if (req.user && contains(req.user.going, venue.id)) {
-                                    info2.user = true;
+                                    searchBody.user = true;
                                 }
-                                info2.going = venue.going;
+                                searchBody.going = venue.going;
                             } else {
                                 var newVenue = new Venue();
-                                newVenue.id = info2.id;
-                                newVenue.name = info2.name;
+                                newVenue.id = searchBody.id;
+                                newVenue.name = searchBody.name;
                                 newVenue.going = 0;
-                                info2.going = 0;
+                                searchBody.going = 0;
                                 newVenue.save(function (err) {
                                     if (err) {
                                         throw err;
                                     }
                                 });
                             }
-                            if (info.reviews) {
-                                info2.review = info.reviews[0].text
+                            if (reviewBody.reviews) {
+                                searchBody.review = reviewBody.reviews[0].text;
                             }
-                            res.send(info2);
+                            res.send(searchBody);
                         });
                         
                     }
@@ -159,8 +188,9 @@ module.exports = function (app, passport) {
             });
         });
     });
-}
+};
 
+// returns true if val in arr, false otherwise. arr and val must be truthy values
 function contains(arr, val) {
     if (!arr || !val){
         return false;
@@ -172,6 +202,7 @@ function contains(arr, val) {
     }
 }
 
+// Removes first occurence of value from arr and shifts indices accordingly
 function removeArr(arr, value) {
     var index = arr.indexOf(value);
     if (index > -1) {
