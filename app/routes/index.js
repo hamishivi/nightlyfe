@@ -117,7 +117,7 @@ module.exports = function (app, passport) {
                         } catch (err) {
                             console.log(err);
                         }
-                        if (!searchBody) {
+                        if (!searchBody || !searchBody.id) {
                             // just exit gracefully. The yelp api is erroring out for some reason
                             // kind of hacky but hey it works!
                             return;
