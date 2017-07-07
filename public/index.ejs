@@ -1,55 +1,57 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
-		<title>NightLyfe</title>
-		<link href="/public/css/main.css" rel="stylesheet" type="text/css">
-	    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link type="text/css" rel="stylesheet" href="public/css/materialize.min.css"  media="screen,projection"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    </head>
-    <body class="grey">
-        <div class='container'>
-            <h2>NightLyfe - club coordination</h2>
-            <!-- search bar -->
-            <p>Search for bars and so on around you and see if anyone else is going!</p>
-            <p>Hit 'going' below after searching to declare that you are going to the bar! (you must login to do this)</p>
-            <p><span class="red-text" id="login"></span></p>
-            <% if (!login) { %>
-                <a href='/auth/facebook' id="fb" class="waves-effect waves-light btn blue white-text">Login with Facebook</a>
+
+<head>
+    <title>NightLyfe</title>
+    <link href="/public/css/main.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="public/css/materialize.min.css" media="screen,projection" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body class="grey">
+    <div class='container'>
+        <h2>NightLyfe - club coordination</h2>
+        <!-- search bar -->
+        <p>Search for bars and so on around you and see if anyone else is going!</p>
+        <p>Hit 'going' below after searching to declare that you are going to the bar! (you must login to do this)</p>
+        <p><span class="red-text" id="login"></span></p>
+        <% if (!login) { %>
+            <a href='/auth/facebook' id="fb" class="waves-effect waves-light btn blue white-text">Login with Facebook</a>
             <% } else { %>
-              <a href='/logout' class="waves-effect waves-light btn black white-text" id="logout">Logout</a>
-            <% } %>
-            <br><br>
-            <nav>
-                <div class="nav-wrapper black">
-                  <form>
-                    <div class="input-field">
-                      <input id="search" type="search" required>
-                      <label for="search"><i class="material-icons">search</i></label>
-                      <i class="material-icons" id='del'>close</i>
+                <a href='/logout' class="waves-effect waves-light btn black white-text" id="logout">Logout</a>
+                <% } %>
+                    <br><br>
+                    <nav>
+                        <div class="nav-wrapper black">
+                            <form>
+                                <div class="input-field">
+                                    <input id="search" type="search" required>
+                                    <label for="search"><i class="material-icons">search</i></label>
+                                    <i class="material-icons" id='del'>close</i>
+                                </div>
+                            </form>
+                        </div>
+                    </nav>
+                    <br><br>
+                    <!-- list of results -->
+                    <div class="progress" id="loader">
+                        <div class="indeterminate"></div>
                     </div>
-                  </form>
-                </div>
-             </nav>
-             <br><br>
-        <!-- list of results -->
-            <div class="progress" id="loader">
-              <div class="indeterminate"></div>
-            </div>
-            <ul class="collection">
-            </ul>
+                    <ul class="collection">
+                    </ul>
+    </div>
+    <!-- the classic hamish ivison footer -->
+    <div class="footer-copyright">
+        <div class="container">
+            Made by <a class="grey-text text-lighten-4" href="http://www.hamishivison.com/">Hamish Ivison</a>. Much thanks to the Yelp API and materializecss.
         </div>
-        <!-- the classic hamish ivison footer -->
-          <div class="footer-copyright">
-            <div class="container">
-            Made by <a class="grey-text text-lighten-4" href="http://www.hamishivison.com/">Hamish Ivison</a>.
-            Much thanks to the Yelp API and materializecss.
-            </div>
-          </div>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script type="text/javascript" src="public/js/materialize.min.js"></script>
-        <script type="text/javascript" src="public/js/cookie.js"></script>
-        <script type="text/javascript" src="public/js/main.js"></script>
-    </body>
+    </div>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="public/js/materialize.min.js"></script>
+    <script type="text/javascript" src="public/js/cookie.js"></script>
+    <script type="text/javascript" src="public/js/main.js"></script>
+</body>
+
 </html>
