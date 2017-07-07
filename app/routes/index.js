@@ -120,6 +120,7 @@ module.exports = function (app, passport) {
                         if (!searchBody || !searchBody.id) {
                             // just exit gracefully. The yelp api is erroring out for some reason
                             // kind of hacky but hey it works!
+                            // Also ensuring we have actually found a restaurant with an id.
                             return;
                         }
                         Venue.findOne({ 'id': searchBody.id }, function (err, venue) {
